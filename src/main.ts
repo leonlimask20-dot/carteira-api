@@ -1,26 +1,21 @@
-import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { NestFactory, Reflector } from '@nestjs/core';
+import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
-/**
- * Ponto de entrada da aplicação NestJS.
- *
- * No NestJS, tudo começa pelo AppModule — o módulo raiz que importa
- * todos os outros módulos da aplicação.
- */
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Prefixo global para todas as rotas
   app.setGlobalPrefix('api');
 
-  // ValidationPipe: valida automaticamente os DTOs em todas as rotas
-  // whitelist: remove campos não declarados no DTO
-  // transform: converte tipos automaticamente (ex: string '1' → number 1)
+  // ValidationPipe — valida DTOs automaticamente
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
-  // Configuração do Swagger UI
+  // ClassSerializerInterceptor — ativa @Exclude() nas entidades
+  // Isso garante que campos marcados com @Exclude() (como senha)
+  // nunca apareçam nas respostas, independente de qual endpoint chamou
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
   const config = new DocumentBuilder()
     .setTitle('Carteira de Investimentos API')
     .setDescription('API para gerenciamento de carteira de investimentos pessoal')

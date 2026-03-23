@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNumber, IsEnum, Min } from 'class-validator';
-import { TipoAtivo } from '../ativos/ativo.entity';
+import { TipoAtivo } from '../ativo.entity';
 
 export class CriarAtivoDto {
   @ApiProperty({ example: 'PETR4' })

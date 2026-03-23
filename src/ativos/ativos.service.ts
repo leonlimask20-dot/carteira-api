@@ -13,12 +13,19 @@ export class AtivosService {
     private readonly carteiraService: CarteiraService,
   ) {}
 
-  async adicionar(carteiraId: number, dto: CriarAtivoDto, usuarioId: number): Promise<Ativo> {
-    // Verifica se a carteira existe e pertence ao usuário
+  async adicionar(carteiraId: number, dto: CriarAtivoDto, usuarioId: number): Promise<any> {
+    // buscarPorId já verifica autorização e carrega o usuario
     const carteira = await this.carteiraService.buscarPorId(carteiraId, usuarioId);
 
-    const ativo = this.ativoRepo.create({ ...dto, carteira });
-    return this.ativoRepo.save(ativo);
+    const ativo = this.ativoRepo.create({
+      ...dto,
+      carteira: { id: carteira.id },
+    });
+    const salvo = await this.ativoRepo.save(ativo);
+
+    // Remove a referência da carteira da resposta
+    const { carteira: _, ...resultado } = salvo as any;
+    return resultado;
   }
 
   async listarPorCarteira(carteiraId: number, usuarioId: number): Promise<Ativo[]> {
@@ -26,19 +33,23 @@ export class AtivosService {
     return this.ativoRepo.find({ where: { carteira: { id: carteiraId } } });
   }
 
-  async atualizarPreco(id: number, dto: AtualizarPrecoDto, usuarioId: number): Promise<Ativo> {
+  async atualizarPreco(id: number, dto: AtualizarPrecoDto, usuarioId: number): Promise<any> {
     const ativo = await this.ativoRepo.findOne({
       where: { id },
       relations: ['carteira', 'carteira.usuario'],
     });
 
     if (!ativo) throw new NotFoundException('Ativo não encontrado');
-    if (ativo.carteira.usuario?.id !== usuarioId) {
+
+    // CRÍTICO: verifica usuario antes de permitir atualização
+    if (!ativo.carteira.usuario || ativo.carteira.usuario.id !== usuarioId) {
       throw new ForbiddenException('Você não tem acesso a este ativo');
     }
 
     ativo.precoAtual = dto.precoAtual;
-    return this.ativoRepo.save(ativo);
+    const atualizado = await this.ativoRepo.save(ativo);
+    const { carteira: _, ...resultado } = atualizado as any;
+    return resultado;
   }
 
   async remover(id: number, usuarioId: number): Promise<void> {
@@ -48,7 +59,9 @@ export class AtivosService {
     });
 
     if (!ativo) throw new NotFoundException('Ativo não encontrado');
-    if (ativo.carteira.usuario?.id !== usuarioId) {
+
+    // CRÍTICO: verifica usuario antes de permitir remoção
+    if (!ativo.carteira.usuario || ativo.carteira.usuario.id !== usuarioId) {
       throw new ForbiddenException('Você não tem acesso a este ativo');
     }
 

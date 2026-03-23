@@ -29,11 +29,16 @@ export class CarteiraService {
   async buscarPorId(id: number, usuarioId: number): Promise<Carteira> {
     const carteira = await this.carteiraRepo.findOne({
       where: { id },
-      relations: ['ativos'],
+      // CRÍTICO: usuario DEVE ser carregado para o check de autorização funcionar
+      relations: ['ativos', 'usuario'],
     });
 
-    if (!carteira) throw new NotFoundException('Carteira não encontrada');
-    if (carteira.usuario?.id !== usuarioId) {
+    if (!carteira) {
+      throw new NotFoundException('Carteira não encontrada');
+    }
+
+    // CRÍTICO: sem isso qualquer usuário acessa qualquer carteira
+    if (!carteira.usuario || carteira.usuario.id !== usuarioId) {
       throw new ForbiddenException('Você não tem acesso a esta carteira');
     }
 
@@ -44,12 +49,12 @@ export class CarteiraService {
     const ativos = carteira.ativos || [];
 
     const totalInvestido = ativos.reduce(
-      (soma, ativo) => soma + ativo.quantidade * ativo.precoMedio,
+      (soma, ativo) => soma + Number(ativo.quantidade) * Number(ativo.precoMedio),
       0,
     );
 
     const valorAtual = ativos.reduce(
-      (soma, ativo) => soma + ativo.quantidade * ativo.precoAtual,
+      (soma, ativo) => soma + Number(ativo.quantidade) * Number(ativo.precoAtual),
       0,
     );
 

@@ -14,7 +14,9 @@ export class CarteiraController {
   @Post()
   @ApiOperation({ summary: 'Criar nova carteira' })
   async criar(@Body() dto: CriarCarteiraDto, @Request() req) {
-    return this.carteiraService.criar(dto, req.user.id);
+    const carteira = await this.carteiraService.criar(dto, req.user.id);
+    const { usuario, ...resultado } = carteira as any;
+    return resultado;
   }
 
   @Get()
@@ -26,11 +28,13 @@ export class CarteiraController {
   @Get(':id')
   @ApiOperation({ summary: 'Buscar carteira por ID' })
   async buscar(@Param('id', ParseIntPipe) id: number, @Request() req) {
-    return this.carteiraService.buscarPorId(id, req.user.id);
+    const carteira = await this.carteiraService.buscarPorId(id, req.user.id);
+    const { usuario, ...resultado } = carteira as any;
+    return resultado;
   }
 
   @Get(':id/resumo')
-  @ApiOperation({ summary: 'Resumo financeiro da carteira — total investido, valor atual e rentabilidade' })
+  @ApiOperation({ summary: 'Resumo financeiro — total investido, valor atual e rentabilidade' })
   async resumo(@Param('id', ParseIntPipe) id: number, @Request() req) {
     const carteira = await this.carteiraService.buscarPorId(id, req.user.id);
     return this.carteiraService.calcularResumo(carteira);
