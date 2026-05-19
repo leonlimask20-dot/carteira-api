@@ -1,43 +1,44 @@
-# Carteira de Investimentos API
+# Investment Portfolio API
 
 ![CI](https://github.com/leonlimask20-dot/carteira-api/actions/workflows/ci.yml/badge.svg)
 ![Node](https://img.shields.io/badge/Node.js-20+-339933?logo=node.js&logoColor=white)
 ![NestJS](https://img.shields.io/badge/NestJS-10-E0234E?logo=nestjs&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?logo=postgresql&logoColor=white)
-![Testes](https://img.shields.io/badge/testes-Jest-C21325?logo=jest&logoColor=white)
+![Tests](https://img.shields.io/badge/tests-Jest-C21325?logo=jest&logoColor=white)
 
-API REST para gerenciamento de carteira de investimentos pessoal com autenticação JWT, TypeORM e documentação Swagger.
+REST API for managing a personal investment portfolio with JWT authentication,
+TypeORM and Swagger documentation.
 
 ---
 
-## Links rápidos
+## Quick links
 
 | | |
 |---|---|
 | Swagger UI | `http://localhost:3000/docs` |
-| Rodar com Docker | `docker-compose up --build` |
-| Rodar testes | `npm test` |
+| Run with Docker | `docker-compose up --build` |
+| Run tests | `npm test` |
 
 ---
 
-## Principais competências demonstradas
+## Key skills demonstrated
 
-- NestJS com arquitetura modular — módulos por domínio (auth, usuários, carteira, ativos)
-- TypeScript com tipagem estrita em DTOs, entidades e serviços
-- Autenticação JWT stateless com Passport e guards
-- TypeORM com PostgreSQL — entidades, relacionamentos e repositórios
-- Validação automática de DTOs com class-validator
-- Documentação interativa com Swagger UI
-- Testes unitários com Jest e TestingModule do NestJS
-- Docker e Docker Compose
-- Pipeline CI com GitHub Actions
+- NestJS with a modular architecture — modules per domain (auth, users, portfolio, assets)
+- TypeScript with strict typing in DTOs, entities and services
+- Stateless JWT authentication with Passport and guards
+- TypeORM with PostgreSQL — entities, relationships and repositories
+- Automatic DTO validation with class-validator
+- Interactive documentation with Swagger UI
+- Unit tests with Jest and NestJS's TestingModule
+- Docker and Docker Compose
+- CI pipeline with GitHub Actions
 
 ---
 
-## Tecnologias
+## Tech stack
 
-| Tecnologia | Versão |
+| Technology | Version |
 |---|---|
 | Node.js | 20+ |
 | NestJS | 10 |
@@ -50,17 +51,17 @@ API REST para gerenciamento de carteira de investimentos pessoal com autenticaç
 
 ---
 
-## Arquitetura modular
+## Modular architecture
 
 ```
 src/
-├── auth/                    ← autenticação JWT
+├── auth/                    ← JWT authentication
 │   ├── strategies/
-│   │   └── jwt.strategy.ts  ← valida token em cada requisição
+│   │   └── jwt.strategy.ts  ← validates the token on each request
 │   ├── guards/
 │   │   └── jwt-auth.guard.ts
 │   ├── auth.service.ts
-│   ├── auth.service.spec.ts ← 4 testes
+│   ├── auth.service.spec.ts ← 4 tests
 │   └── auth.module.ts
 ├── usuarios/
 │   ├── usuario.entity.ts
@@ -69,7 +70,7 @@ src/
 ├── carteira/
 │   ├── carteira.entity.ts
 │   ├── carteira.service.ts
-│   ├── carteira.service.spec.ts ← 7 testes
+│   ├── carteira.service.spec.ts ← 7 tests
 │   └── carteira.module.ts
 └── ativos/
     ├── ativo.entity.ts
@@ -81,45 +82,45 @@ src/
 
 ## Endpoints
 
-### Autenticação
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| POST | `/api/usuarios/registro` | Criar conta |
-| POST | `/api/auth/login` | Login — retorna JWT |
+### Authentication
+| Method | Route | Description |
+|--------|------|-------------|
+| POST | `/api/usuarios/registro` | Create account |
+| POST | `/api/auth/login` | Login — returns a JWT |
 
-### Carteira
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| POST | `/api/carteiras` | Criar carteira |
-| GET | `/api/carteiras` | Listar carteiras |
-| GET | `/api/carteiras/:id` | Buscar carteira |
-| GET | `/api/carteiras/:id/resumo` | Resumo financeiro |
+### Portfolio
+| Method | Route | Description |
+|--------|------|-------------|
+| POST | `/api/carteiras` | Create portfolio |
+| GET | `/api/carteiras` | List portfolios |
+| GET | `/api/carteiras/:id` | Get portfolio |
+| GET | `/api/carteiras/:id/resumo` | Financial summary |
 
-### Ativos
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| POST | `/api/carteiras/:id/ativos` | Adicionar ativo |
-| GET | `/api/carteiras/:id/ativos` | Listar ativos |
-| PATCH | `/api/carteiras/:id/ativos/:id/preco` | Atualizar preço |
-| DELETE | `/api/carteiras/:id/ativos/:id` | Remover ativo |
+### Assets
+| Method | Route | Description |
+|--------|------|-------------|
+| POST | `/api/carteiras/:id/ativos` | Add asset |
+| GET | `/api/carteiras/:id/ativos` | List assets |
+| PATCH | `/api/carteiras/:id/ativos/:id/preco` | Update price |
+| DELETE | `/api/carteiras/:id/ativos/:id` | Remove asset |
 
 ---
 
-## Como executar
+## How to run
 
 ```bash
-# Copie o .env
+# Copy the .env
 cp .env.example .env
 
-# Suba o banco e a API
+# Bring up the database and the API
 docker-compose up --build
 ```
 
-Acesse o Swagger em `http://localhost:3000/docs`
+Open the Swagger UI at `http://localhost:3000/docs`
 
 ---
 
-## Testes
+## Tests
 
 ```bash
 npm test
@@ -127,7 +128,19 @@ npm test
 
 ---
 
-## Autor
+## 🤖 Agent Architecture
+
+This project was built and code-reviewed using a **multi-agent
+context-optimization workflow**: specialized AI agents each audit a single
+slice of the codebase — auth, domain modules, persistence, tests — within a
+strict context budget. The approach cuts review time and token cost while
+keeping full traceability of every finding.
+
+Methodology, agent templates and the full playbook: **[leonlim3.gumroad.com](https://leonlim3.gumroad.com)**
+
+---
+
+## Author
 
 **LNL**
 GitHub: [@leonlimask20-dot](https://github.com/leonlimask20-dot)
